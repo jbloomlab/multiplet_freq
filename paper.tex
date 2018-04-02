@@ -1,0 +1,175 @@
+%% Submissions for peer-review must enable line-numbering 
+%% using the lineno option in the \documentclass command.
+%%
+%% Preprints and camera-ready submissions do not need 
+%% line numbers, and should have this option removed.
+%%
+%% Please note that the line numbering option requires
+%% version 1.1 or newer of the wlpeerj.cls file, and
+%% the corresponding author info requires v1.2
+
+\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
+% \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
+
+\usepackage[colorlinks=true, citecolor=blue, urlcolor=blue, linkcolor=blue]{hyperref}
+
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\setlength\extrarowheight{1pt}
+
+\usepackage{float}
+\newfloat{suppfile}{thp}{lofsupfile}
+\floatname{suppfile}{Supplemental file}
+\setcounter{topnumber}{12}
+\setcounter{bottomnumber}{12}
+\setcounter{totalnumber}{12}
+
+\title{Estimating the frequency of multiplets in single-cell RNA sequencing from cell-mixing experiments}
+
+\author[1]{Jesse D. Bloom}
+\affil[1]{Fred Hutch Cancer Research Center, Seattle, WA  98109}
+\corrauthor[1]{Jesse D. Bloom}{jbloom@fredhutch.org}
+
+% \keywords{Keyword1, Keyword2, Keyword3}
+
+\begin{abstract}
+In single-cell RNA-sequencing, it is important to know the frequency with which the sequenced transcriptomes actually derive from multiple cells.
+A common method to estimate this frequency is to mix two different types of cells (e.g., human and mouse), and then determine how often the transcriptomes contain a mix of transcripts from both cell types.
+When the two cell types are mixed in equal proportion, the calculation of the multiplet frequency from the frequency of mixed transcriptomes is straightforward.
+However, there are no published descriptions of how to calculate the multiplet frequency in the general case when the cell types are mixed unequally.
+Here I derive equations to analytically calculate the multiplet frequency from the numbers of observed pure and mixed transcriptomes when two cell types are mixed in arbitrary proportions, under the assumption that the loading of cells into droplets or wells is Poisson.
+\end{abstract}
+
+\begin{document}
+
+\flushbottom
+\maketitle
+\thispagestyle{empty}
+
+\section*{Introduction}
+
+Many methods for single-cell RNA sequencing involve partitioning cells into barcoded droplets~\citep{klein2015droplet,macosko2015highly,zheng2017massively}, wells~\citep{gierahn2017seq}, or combinations of wells~\citep{cao2017comprehensive}.
+The fundamental principle of these methods is that the number of possible barcoded partitions exceeds the number of cells.
+Therefore, most partitions contain at most one cell if the number of cells per partition is Poisson distributed.
+However, some fraction of the partitions contain multiple cells, and estimating this \emph{multiplet frequency} is an important aspect of experimental quality control.
+Crucially, for many methods, the actual number of possible partitions is not precisely known, and all that is observed is the number of different barcoded transcriptomes after sequencing (i.e., the number of non-empty partitions).
+
+The most common method to determine the multiplet frequency is to perform the experiment on a mix two types of cells (e.g., human and mouse).
+During the analysis of the sequencing results, each partition can be classified as containing exclusively transcripts from one of the two cell types, or a mix of transcripts from both cell types.
+Partitions that contain a mix of transcripts must be multiplets.
+If the two cell types are mixed in equal proportions and the average number of cells per partition is low (so that most multiplets are doublets), then the multiplet frequency can be estimated as simply twice the fraction of non-empty partitions that contain a mix of both cell types.
+The logic is that all the multiplets are doublets, and only half the doublets will have cells of both types (the others will have two cells of the same type).
+This approach has been used to estimate the multiplet rate during the initial prototyping of most single-cell RNA sequencing methods~\citep{klein2015droplet,macosko2015highly,zheng2017massively,gierahn2017seq,cao2017comprehensive}.
+
+However, in some cases the two cell types may be mixed in unequal proportions.
+Unequal mixing could arise simply from error during cell counting, but it can also be a desirable aspect of experimental design.
+For instance, if the researcher is actually interested in the human cells and simply wants to include an internal control to estimate the multiplet frequency during each new experiment, then (s)he may want to add substantially smaller numbers of mouse cells to estimate the multiplet frequency while still mostly obtaining data for human cells.
+But when the cells are mixed unequally, it is no longer valid to estimate the multiplet frequency as simply twice the fraction of non-empty partitions that contain a mix of both cell types.
+Surprisingly, I could find no published descriptions of the correct way to calculate the multiplet frequency from unequal mixes of two cell types.
+Here I remedy this gap in the literature by deriving the equations to compute the multiplet frequency when the cells are mixed in arbitrary proportions under the assumption that the number of cells per partition is Poisson distributed.
+
+\section*{Results and Discussion}
+\label{sec:results}
+
+\subsection*{Derivation of multiplet frequency from observed numbers of pure and mixed-cell droplets}
+We consider the case in which cells of two types (e.g., human and mouse) are distributed into individual barcoded droplets, although the same logic applies if the cells are distributed into barcoded wells or combinations of wells.
+We assume the sequencing data have been analyzed so that each non-empty droplet can be classified as containing at least one cell of type 1, at least one cell of type 2, or cells of both types.
+We will refer to the number of droplets in each of these three groupings as $N_1$, $N_2$, and $N_{1,2}$, respectively.
+For instance, the 10X \texttt{cellranger} pipeline (version 2.1.1) returns these numbers as the ``Estimated Number of Cell Partitions.''
+
+The only assumption of our analysis is that the number of cells per droplet is Poisson distributed.
+Let $\mu_1$ be the average number of cells of type 1 per droplet, and $\mu_2$ be the average number of cells of type 2 per droplet.
+The average number of cells of any type per droplet is then $\mu_1 + \mu_2$.
+So the probability that a droplet contains at least one cell of any type is
+\begin{eqnarray}
+\label{eq:Pr1}
+\Pr\left(c \ge 1\right) &=& 1 - \Pr\left(c = 0 \right) \nonumber \\
+&=& 1 - e^{-\mu_1 - \mu_2}.
+\end{eqnarray}
+Likewise, the probability that a droplet contains multiple cells of any type (e.g., a multiplet) is
+\begin{eqnarray}
+\label{eq:Pr2}
+\Pr\left(c \ge 2\right) &=& 1 - \Pr\left(c = 0\right) - \Pr\left(c = 1\right) \nonumber \\
+&=& 1 - e^{-\mu_1 - \mu_2} - \left(\mu_1 + \mu_2\right) e^{-\mu_1 + \mu_2}.
+\end{eqnarray}
+The multiplet frequency $M$ is simply the probability that a droplet with at least one cell actually contains multiple cells, which is
+\begin{eqnarray}
+\label{eq:M}
+M &=& \frac{\Pr\left(c \ge 2\right)}{\Pr\left(c \ge 1\right)} \nonumber \\
+&=& 1 - \frac{\left(\mu_1 + \mu_2\right) e^{-\mu_1 + \mu_2}}{1 - e^{-\mu_1 - \mu_2}}.
+\end{eqnarray}
+However, to evaluate this expression for $M$, we need to know the values of $\mu_1$ and $\mu_2$.
+
+We can write down equations for $\mu_1$ and $\mu_2$ by again using the fact that the number of cells per droplet is Poisson distributed.
+Specifically, if $N$ is the total number of droplets (empty and non-empty), then the expected number of droplets that have at least one cell of type 1 is $N \times \Pr\left(c_1 \ge 1\right) = N \left(1 - e^{-\mu_1}\right)$.
+The observed number of droplets with at least one cell of type 1 is $N_1$, so setting the observed number equal to the expected number gives us an equation for $\mu_1$,
+\begin{equation}
+N_1 = N \left(1 - e^{-\mu_1}\right).
+\end{equation}
+We can easily solve this equation for $\mu_1$ to yield
+\begin{equation}
+\label{eq:mu1}
+\mu_1 = -\ln\left(\frac{N - N_1}{N}\right),
+\end{equation}
+and likewise for $\mu_2$ we have
+\begin{equation}
+\label{eq:mu2}
+\mu_2 = -\ln\left(\frac{N - N_2}{N}\right).
+\end{equation}
+Equations~\ref{eq:mu1} and \ref{eq:mu2} give us a way to determine the values ($\mu_1$ and $\mu_2$) needed to calculate the multiplet frequency (Equation~\ref{eq:M}) in terms of the experimental observables $N_1$ and $N_2$.
+Unfortunately, these two equations also require knowledge of the total (empty and non-empty) number of droplets $N$, which is not directly observable from the sequencing data.
+
+However, we can take advantage of another relationship to calculate $N$.
+The fraction of all (empty and non-empty) droplets that contain cells of both type is $\frac{N_{1,2}}{N}$, and we expect this fraction to simply be the product of the probability that a droplet contains at least one cell of type 1 with the probability that a droplet contains at least one cell of type 2, which in mathematical terms can be stated as $\Pr\left(c_1 \ge 1 \land c_2 \ge 1\right) = \Pr\left(c_1 \ge 1\right) \times \Pr\left(c_2 \ge 1\right)$.
+Therefore, we have
+\begin{equation}
+\frac{N_{1,2}}{N} = \frac{N_1}{N} \times \frac{N_2}{N}.
+\end{equation}
+This equation can be solved to give
+\begin{equation}
+\label{eq:N}
+N = \frac{N_1 N_2}{N_{1,2}},
+\end{equation}
+which can be completely evaluated in terms of the experimental observables.
+So we can use Equations~\ref{eq:mu1}, \ref{eq:mu2}, and \ref{eq:N} to calculate $\mu_1$ and $\mu_2$ in terms of the experimental observables, and then use those results to calculate the multiplet frequency via Equation~\ref{eq:M}.
+Therefore, we now have an analytic solution to the multiplet frequency in terms of the three experimental observables.
+
+\subsection*{Implementation and example calculations}
+
+\url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb}
+
+\begin{table}[h]
+\centering
+\input{equal_example}
+\caption{\label{tab:equal}Caption}
+\end{table}
+
+\begin{table}[h]
+\centering
+\input{unequal_example}
+\caption{\label{tab:equal}Caption}
+\end{table}
+
+\section*{Conclusions}
+
+\section*{Methods}
+The LaTex source for this paper, the Jupyter notebook that implements the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
+
+
+\bibliography{references}
+
+\clearpage
+
+\begin{suppfile}
+\caption{\label{suppfile:jupyter_notebook}
+A Jupyter notebook that implements the calculations in Python and R functions, and does the calculations for the examples shown in the tables in this paper.
+}
+\end{suppfile}
+
+\begin{suppfile}
+\caption{\label{suppfile:html_notebook}
+This file contains an HTML rendering of the Jupyter notebook in Supplemental file~\ref{suppfile:jupyter_notebook}.
+}
+\end{suppfile}
+
+\end{document}
