@@ -8,8 +8,8 @@
 %% version 1.1 or newer of the wlpeerj.cls file, and
 %% the corresponding author info requires v1.2
 
-\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
-% \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
+%\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
+ \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
 
 \usepackage[colorlinks=true, citecolor=blue, urlcolor=blue, linkcolor=blue]{hyperref}
 
@@ -70,12 +70,12 @@ Here I remedy this gap in the literature by deriving the equations to compute th
 \label{sec:results}
 
 \subsection*{Derivation of multiplet frequency from observed numbers of pure and mixed-cell droplets}
-We consider the case in which cells of two types (e.g., human and mouse) are distributed into individual barcoded droplets, although the same logic applies if the cells are distributed into barcoded wells or combinations of wells.
-We assume the sequencing data have been analyzed so that each non-empty droplet can be classified as containing at least one cell of type 1, at least one cell of type 2, or cells of both types.
-We will refer to the number of droplets in each of these three groupings as $N_1$, $N_2$, and $N_{1,2}$, respectively.
+Consider the case in which cells of two types (e.g., human and mouse) are distributed into individual barcoded droplets, although the same logic applies if the cells are distributed into barcoded wells or combinations of wells.
+Assume the sequencing data have been analyzed so that each non-empty droplet can be classified as containing at least one cell of type 1, at least one cell of type 2, or cells of both types.
+I will refer to the number of droplets in each of these three groupings as $N_1$, $N_2$, and $N_{1,2}$, respectively.
 For instance, the 10X \texttt{cellranger} pipeline (version 2.1.1) returns these numbers as the ``Estimated Number of Cell Partitions.''
 
-The only assumption of our analysis is that the number of cells per droplet is Poisson distributed.
+The only assumption of the derivation is that the number of cells per droplet is Poisson distributed.
 Let $\mu_1$ be the average number of cells of type 1 per droplet, and $\mu_2$ be the average number of cells of type 2 per droplet.
 The average number of cells of any type per droplet is then $\mu_1 + \mu_2$.
 So the probability that a droplet contains at least one cell of any type is
@@ -96,7 +96,7 @@ The multiplet frequency $M$ is simply the probability that a droplet with at lea
 M &=& \frac{\Pr\left(c \ge 2\right)}{\Pr\left(c \ge 1\right)} \nonumber \\
 &=& 1 - \frac{\left(\mu_1 + \mu_2\right) e^{-\mu_1 + \mu_2}}{1 - e^{-\mu_1 - \mu_2}}.
 \end{eqnarray}
-However, to evaluate this expression for $M$, we need to know the values of $\mu_1$ and $\mu_2$.
+However, evaluating this expression for $M$ requires the values of $\mu_1$ and $\mu_2$.
 
 We can write down equations for $\mu_1$ and $\mu_2$ by again using the fact that the number of cells per droplet is Poisson distributed.
 Specifically, if $N$ is the total number of droplets (empty and non-empty), then the expected number of droplets that have at least one cell of type 1 is $N \times \Pr\left(c_1 \ge 1\right) = N \left(1 - e^{-\mu_1}\right)$.
@@ -104,12 +104,12 @@ The observed number of droplets with at least one cell of type 1 is $N_1$, so se
 \begin{equation}
 N_1 = N \left(1 - e^{-\mu_1}\right).
 \end{equation}
-We can easily solve this equation for $\mu_1$ to yield
+This equation is easily solved for $\mu_1$ to yield
 \begin{equation}
 \label{eq:mu1}
 \mu_1 = -\ln\left(\frac{N - N_1}{N}\right),
 \end{equation}
-and likewise for $\mu_2$ we have
+and likewise for $\mu_2$,
 \begin{equation}
 \label{eq:mu2}
 \mu_2 = -\ln\left(\frac{N - N_2}{N}\right).
@@ -118,8 +118,8 @@ Equations~\ref{eq:mu1} and \ref{eq:mu2} give us a way to determine the values ($
 Unfortunately, these two equations also require knowledge of the total (empty and non-empty) number of droplets $N$, which is not directly observable from the sequencing data.
 
 However, we can take advantage of another relationship to calculate $N$.
-The fraction of all (empty and non-empty) droplets that contain cells of both types is $\frac{N_{1,2}}{N}$, and we expect this fraction to simply be the product of the probability that a droplet contains at least one cell of type 1 with the probability that a droplet contains at least one cell of type 2, which in mathematical terms can be stated as $\Pr\left(c_1 \ge 1 \land c_2 \ge 1\right) = \Pr\left(c_1 \ge 1\right) \times \Pr\left(c_2 \ge 1\right)$.
-Therefore, we have
+The fraction of all (empty and non-empty) droplets that contain cells of both types is $\frac{N_{1,2}}{N}$, and this fraction is simply the product of the probability that a droplet contains at least one cell of type 1 with the probability that a droplet contains at least one cell of type 2, which in mathematical terms can be stated as $\Pr\left(c_1 \ge 1 \land c_2 \ge 1\right) = \Pr\left(c_1 \ge 1\right) \times \Pr\left(c_2 \ge 1\right)$.
+Therefore,
 \begin{equation}
 \frac{N_{1,2}}{N} = \frac{N_1}{N} \times \frac{N_2}{N}.
 \end{equation}
@@ -129,15 +129,15 @@ This equation can be solved to give
 N = \frac{N_1 N_2}{N_{1,2}},
 \end{equation}
 which can be completely evaluated in terms of the experimental observables.
-So we can use Equations~\ref{eq:mu1}, \ref{eq:mu2}, and \ref{eq:N} to calculate $\mu_1$ and $\mu_2$ in terms of the experimental observables, and then use those results to calculate the multiplet frequency via Equation~\ref{eq:M}.
-Therefore, we now have an analytic solution to the multiplet frequency in terms of the three experimental observables.
+Equations~\ref{eq:mu1}, \ref{eq:mu2}, and \ref{eq:N} can be used to calculate $\mu_1$ and $\mu_2$ in terms of the experimental observables, and those results used to calculate the multiplet frequency via Equation~\ref{eq:M}.
+This provides an analytic solution for the multiplet frequency in terms of the three experimental observables.
 
 \subsection*{Implementation and example calculations}
 A simple function to perform the calculations described in the previous subsection is implemented in Python and R in the Jupyter notebook found at
 \url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb} (see also Supplemental files~\ref{suppfile:jupyter_notebook} and \ref{suppfile:html_notebook}).
-To illustrate the calculations, we used this function to calculate the multiplet frequency for hypothetical data.
+To illustrate the calculations, I used this function to calculate the multiplet frequency for hypothetical data.
 
-First, we considered hypothetical data in which the two types of cells are mixed in equal proportions.
+First, consider hypothetical data in which the two types of cells are mixed in equal proportions.
 Prior papers have approximated the multiplet frequency from such experiments as simply twice the fraction of non-empty droplets that contain cells of both types~\citep{klein2015droplet,macosko2015highly,zheng2017massively,cao2017comprehensive}, which is $\frac{N_{1,2}}{N_1 + N_2 - N_{1,2}}$ in the notation defined in the previous subsection. 
 Table~\ref{tab:equal} shows that the exact equation derived in the previous subsection gives very similar results to this approximate method as long as the multiplet frequency is low.
 When the multiplet frequency becomes high, the approximate method starts to overestimate the true multiplet frequency, since it fails to account for the fact that some multiplets will contain more than two cells.
@@ -151,7 +151,7 @@ The multiplet frequencies calculated using the exact method described here (colu
 However, the two methods are slightly different at higher multiplet frequencies, since the latter method fails to account for multiplets that have more than two cells.}
 \end{table}
 
-Next, we considered hypothetical data in which the two types of cells are mixed in unequal proportions.
+Next, consider hypothetical data in which the two types of cells are mixed in unequal proportions.
 Table~\ref{tab:unequal} shows the multiplet frequencies for several such experiments.
 An interesting aspect of the results is that at high multiplet frequencies and very unequal cell proportions, the multiplet frequency is substantially \emph{lower} than the fraction of droplets containing the rarer cell type that contain a mix of both cell types.
 The reason is that multiplets (particularly higher-order ones) become more and more likely to contain at least one cell of the rarer type relative to droplets that contain only one cell.
@@ -167,7 +167,7 @@ Multiplet frequencies for five hypothetical experiments in which human and mouse
 
 \section*{Conclusions}
 I have described how to calculate the multiplet frequency in single-cell RNA sequencing experiments in which two cell types are mixed in arbitrary proportions.
-It is important to note that this calculation requires that the sequencing data have already been analyzed to determine whether each partition contains a non-negligible number of transcripts from each cell type, but many common analysis programs (such as the 10X \texttt{cellranger} pipeline) already perform this analysis.
+It is important to note that this calculation requires that the sequencing data have already been analyzed to determine whether each partition contains a non-negligible number of transcripts from each cell type, but many common analysis programs (such as the 10X \texttt{cellranger} pipeline) already do this.
 It is also important to note that the approach in this paper only calculates the multiplet frequency---it does \emph{not} actually identify the multiplets so that they can be removed from downstream analyses.
 For that purpose, other more sophisticated approaches have been developd~\citep{ilicic2016classification,stoeckius2017cell,kang2018multiplexed}.
 Nonetheless, simply calculating the multiplet frequency from the data returned by standard pipelines such as the 10X \texttt{cellranger} is important for many purposes, and the results here enable that to be done regardless of the proportions at which the cell types are mixed.
