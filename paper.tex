@@ -33,10 +33,10 @@
 % \keywords{Keyword1, Keyword2, Keyword3}
 
 \begin{abstract}
-In single-cell RNA-sequencing, it is important to know the frequency with which the sequenced transcriptomes actually derive from multiple cells.
-A common method to estimate this frequency is to mix two different types of cells (e.g., human and mouse), and then determine how often the transcriptomes contain a mix of transcripts from both cell types.
+In single-cell RNA-sequencing, it is important to know the frequency at which the sequenced transcriptomes actually derive from multiple cells.
+A common method to estimate this multiplet frequency is to mix two different types of cells (e.g., human and mouse), and then determine how often the transcriptomes contain transcripts from both cell types.
 When the two cell types are mixed in equal proportion, the calculation of the multiplet frequency from the frequency of mixed transcriptomes is straightforward.
-However, there are no published descriptions of how to calculate the multiplet frequency in the general case when the cell types are mixed unequally.
+But surprisingly, there are no published descriptions of how to calculate the multiplet frequency in the general case when the cell types are mixed unequally.
 Here I derive equations to analytically calculate the multiplet frequency from the numbers of observed pure and mixed transcriptomes when two cell types are mixed in arbitrary proportions, under the assumption that the loading of cells into droplets or wells is Poisson.
 \end{abstract}
 
@@ -49,23 +49,21 @@ Here I derive equations to analytically calculate the multiplet frequency from t
 \section*{Introduction}
 
 Many methods for single-cell RNA sequencing involve partitioning cells into barcoded droplets~\citep{klein2015droplet,macosko2015highly,zheng2017massively}, wells~\citep{gierahn2017seq}, or combinations of wells~\citep{cao2017comprehensive}.
-The fundamental principle of these methods is that the number of possible barcoded partitions exceeds the number of cells.
-Therefore, most partitions contain at most one cell if the number of cells per partition is Poisson distributed.
-However, some fraction of the partitions contain multiple cells, and estimating this \emph{multiplet frequency} is an important aspect of experimental quality control.
-Crucially, for many methods, the actual number of possible partitions is not precisely known, and all that is observed is the number of different barcoded transcriptomes after sequencing (i.e., the number of non-empty partitions).
+As long as the number of possible partitions exceeds the number of cells, then most partitions will contain at most one cell.
+However, some fraction of the non-empty partitions will contain multiple cells, and estimating this \emph{multiplet frequency} is an important aspect of experimental quality control.
 
-The most common method to determine the multiplet frequency is to perform the experiment on a mix two types of cells (e.g., human and mouse).
-During the analysis of the sequencing results, each partition can be classified as containing exclusively transcripts from one of the two cell types, or a mix of transcripts from both cell types.
-Partitions that contain a mix of transcripts must be multiplets.
-If the two cell types are mixed in equal proportions and the average number of cells per partition is low (so that most multiplets are doublets), then the multiplet frequency can be estimated as simply twice the fraction of non-empty partitions that contain a mix of both cell types.
+The most common method to determine the multiplet frequency is to use a mix two types of cells (e.g., human and mouse).
+During the analysis of the sequencing results, each non-empty partition can be identified as containing transcripts from one or both of the two cell types.
+Partitions that contain a substantial number of transcripts from both cell types must be multiplets.
+If the two cell types are mixed equally and the average number of cells per partition is low (so that most multiplets are doublets), then the multiplet frequency can be estimated as simply twice the fraction of non-empty partitions that contain a mix of cell types.
 The logic is that all the multiplets are doublets, and only half the doublets will have cells of both types (the others will have two cells of the same type).
-This approach has been used to estimate the multiplet rate during the initial prototyping of most single-cell RNA sequencing methods~\citep{klein2015droplet,macosko2015highly,zheng2017massively,gierahn2017seq,cao2017comprehensive}.
+This approach has been used to estimate the multiplet frequency during the prototyping of most single-cell RNA sequencing methods~\citep{klein2015droplet,macosko2015highly,zheng2017massively,gierahn2017seq,cao2017comprehensive}.
 
 However, in some cases the two cell types may be mixed in unequal proportions.
 Unequal mixing could arise simply from error during cell counting, but it can also be a desirable aspect of experimental design.
-For instance, if the researcher is actually interested in the human cells and simply wants to include an internal control to estimate the multiplet frequency during each new experiment, then (s)he may want to add substantially smaller numbers of mouse cells to estimate the multiplet frequency while still mostly obtaining data for human cells.
+For instance, if the researcher is actually interested in the human cells and simply wants to include an internal control to estimate the multiplet frequency during each new experiment, then (s)he may want to add fewer mouse cells so that most of the resulting data is for the human cells.
 But when the cells are mixed unequally, it is no longer valid to estimate the multiplet frequency as simply twice the fraction of non-empty partitions that contain a mix of both cell types.
-Surprisingly, I could find no published descriptions of the correct way to calculate the multiplet frequency from unequal mixes of two cell types.
+Surprisingly, I could find no published descriptions of how to calculate the multiplet frequency from unequal mixes of two cell types.
 Here I remedy this gap in the literature by deriving the equations to compute the multiplet frequency when the cells are mixed in arbitrary proportions under the assumption that the number of cells per partition is Poisson distributed.
 
 \section*{Results and Discussion}
@@ -120,7 +118,7 @@ Equations~\ref{eq:mu1} and \ref{eq:mu2} give us a way to determine the values ($
 Unfortunately, these two equations also require knowledge of the total (empty and non-empty) number of droplets $N$, which is not directly observable from the sequencing data.
 
 However, we can take advantage of another relationship to calculate $N$.
-The fraction of all (empty and non-empty) droplets that contain cells of both type is $\frac{N_{1,2}}{N}$, and we expect this fraction to simply be the product of the probability that a droplet contains at least one cell of type 1 with the probability that a droplet contains at least one cell of type 2, which in mathematical terms can be stated as $\Pr\left(c_1 \ge 1 \land c_2 \ge 1\right) = \Pr\left(c_1 \ge 1\right) \times \Pr\left(c_2 \ge 1\right)$.
+The fraction of all (empty and non-empty) droplets that contain cells of both types is $\frac{N_{1,2}}{N}$, and we expect this fraction to simply be the product of the probability that a droplet contains at least one cell of type 1 with the probability that a droplet contains at least one cell of type 2, which in mathematical terms can be stated as $\Pr\left(c_1 \ge 1 \land c_2 \ge 1\right) = \Pr\left(c_1 \ge 1\right) \times \Pr\left(c_2 \ge 1\right)$.
 Therefore, we have
 \begin{equation}
 \frac{N_{1,2}}{N} = \frac{N_1}{N} \times \frac{N_2}{N}.
@@ -135,25 +133,49 @@ So we can use Equations~\ref{eq:mu1}, \ref{eq:mu2}, and \ref{eq:N} to calculate 
 Therefore, we now have an analytic solution to the multiplet frequency in terms of the three experimental observables.
 
 \subsection*{Implementation and example calculations}
+A simple function to perform the calculations described in the previous subsection is implemented in Python and R in the Jupyter notebook found at
+\url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb} (see also Supplemental files~\ref{suppfile:jupyter_notebook} and \ref{suppfile:html_notebook}).
+To illustrate the calculations, we used this function to calculate the multiplet frequency for hypothetical data.
 
-\url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb}
+First, we considered hypothetical data in which the two types of cells are mixed in equal proportions.
+Prior papers have approximated the multiplet frequency from such experiments as simply twice the fraction of non-empty droplets that contain cells of both types~\citep{klein2015droplet,macosko2015highly,zheng2017massively,cao2017comprehensive}, which is $\frac{N_{1,2}}{N_1 + N_2 - N_{1,2}}$ in the notation defined in the previous subsection. 
+Table~\ref{tab:equal} shows that the exact equation derived in the previous subsection gives very similar results to this approximate method as long as the multiplet frequency is low.
+When the multiplet frequency becomes high, the approximate method starts to overestimate the true multiplet frequency, since it fails to account for the fact that some multiplets will contain more than two cells.
 
-\begin{table}[h]
+\begin{table}[b]
 \centering
 \input{equal_example}
-\caption{\label{tab:equal}Caption}
+\caption{\label{tab:equal}
+Multiplet frequencies for three hypothetical experiments in which human and mouse cells are mixed equally.
+The multiplet frequencies calculated using the exact method described here (column \emph{multiplet freq}) are very similar to those obtained simply by multiplying by two the fraction of non-empty droplets that contain cells of both types (column \emph{twice cross celltype freq}).
+However, the two methods are slightly different at higher multiplet frequencies, since the latter method fails to account for multiplets that have more than two cells.}
 \end{table}
 
-\begin{table}[h]
+Next, we considered hypothetical data in which the two types of cells are mixed in unequal proportions.
+Table~\ref{tab:unequal} shows the multiplet frequencies for several such experiments.
+An interesting aspect of the results is that at high multiplet frequencies and very unequal cell proportions, the multiplet frequency is substantially \emph{lower} than the fraction of droplets containing the rarer cell type that contain a mix of both cell types.
+The reason is that multiplets (particularly higher-order ones) become more and more likely to contain at least one cell of the rarer type relative to droplets that contain only one cell.
+For instance, in the final experiment in Table~\ref{tab:unequal}, two thirds of the droplets containing mouse cells have a mix of both cell types, yet less than half the non-empty droplets are multiplets (the multiplet frequency is 0.459).
+This somewhat non-intuitive results illustrates the importance of using the correct mathematical relationship to calculate the multiplet frequency when cell types are mixed unequally.
+
+\begin{table}[t]
 \centering
 \input{unequal_example}
-\caption{\label{tab:equal}Caption}
+\caption{\label{tab:unequal}
+Multiplet frequencies for five hypothetical experiments in which human and mouse cells are mixed unequally.}
 \end{table}
 
 \section*{Conclusions}
+I have described how to calculate the multiplet frequency in single-cell RNA sequencing experiments in which two cell types are mixed in arbitrary proportions.
+It is important to note that this calculation requires that the sequencing data have already been analyzed to determine whether each partition contains a non-negligible number of transcripts from each cell type, but many common analysis programs (such as the 10X \texttt{cellranger} pipeline) already perform this analysis.
+It is also important to note that the approach in this paper only calculates the multiplet frequency---it does \emph{not} actually identify the multiplets so that they can be removed from downstream analyses.
+For that purpose, other more sophisticated approaches have been developd~\citep{ilicic2016classification,stoeckius2017cell,kang2018multiplexed}.
+Nonetheless, simply calculating the multiplet frequency from the data returned by standard pipelines such as the 10X \texttt{cellranger} is important for many purposes, and the results here enable that to be done regardless of the proportions at which the cell types are mixed.
+
 
 \section*{Methods}
 The LaTex source for this paper, the Jupyter notebook that implements the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
+The Jupyter notebook is also available in Supplemental file~\ref{suppfile:jupyter_notebook}, and an HTML rendering of that notebook is in Supplemental file~\ref{suppfile:html_notebook}.
 
 
 \bibliography{references}
