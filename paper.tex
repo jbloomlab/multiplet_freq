@@ -9,7 +9,7 @@
 %% the corresponding author info requires v1.2
 
 %\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
- \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
+\documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
 
 \usepackage[colorlinks=true, citecolor=blue, urlcolor=blue, linkcolor=blue]{hyperref}
 
@@ -66,7 +66,11 @@ But when the cells are mixed unequally, it is no longer valid to estimate the mu
 Surprisingly, I could find no published descriptions of how to calculate the multiplet frequency from unequal mixes of two cell types.
 Here I remedy this gap in the literature by deriving the equations to compute the multiplet frequency when the cells are mixed in arbitrary proportions under the assumption that the number of cells per partition is Poisson distributed.
 
-\section*{Results and Discussion}
+\section*{Methods}
+The LaTex source for this paper, the Jupyter notebook that implements the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
+The Jupyter notebook is also available in Supplemental file~\ref{suppfile:jupyter_notebook}, and an HTML rendering of that notebook is in Supplemental file~\ref{suppfile:html_notebook}.
+
+\section*{Results}
 \label{sec:results}
 
 \subsection*{Derivation of multiplet frequency from observed numbers of pure and mixed-cell droplets}
@@ -172,10 +176,6 @@ It is also important to note that the approach in this paper only calculates the
 For that purpose, other more sophisticated approaches have been developd~\citep{ilicic2016classification,stoeckius2017cell,kang2018multiplexed}.
 Nonetheless, simply calculating the multiplet frequency from the data returned by standard pipelines such as the 10X \texttt{cellranger} is important for many purposes, and the results here enable that to be done regardless of the proportions at which the cell types are mixed.
 
-
-\section*{Methods}
-The LaTex source for this paper, the Jupyter notebook that implements the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
-The Jupyter notebook is also available in Supplemental file~\ref{suppfile:jupyter_notebook}, and an HTML rendering of that notebook is in Supplemental file~\ref{suppfile:html_notebook}.
 
 
 \bibliography{references}
