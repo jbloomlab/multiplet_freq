@@ -13,7 +13,8 @@ Both reviewers have a few comments that should be straightforward to address.
 
 *Response:
 Thank you for the careful reviews of the paper, and sorry for the long delay in submitting the revision.
-The delay was due to other intervening non-scientific factors.*
+The delay was due to other intervening non-scientific factors.
+I think you will find that the revised version fully addresses the minor comments from the reviewers.*
 
 ## Reviewer 1 (Eric Brenner) comments
 
