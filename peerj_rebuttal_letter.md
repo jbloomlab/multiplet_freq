@@ -11,21 +11,50 @@ In the letter below, the reviewer and editor comments are in plain text, and our
 
 Both reviewers have a few comments that should be straightforward to address.
 
-### *Response*
-*Text*
+*Response:
+Thank you for the careful reviews of the paper, and sorry for the long delay in submitting the revision.
+The delay was due to other intervening non-scientific factors.*
 
 ## Reviewer 1 (Eric Brenner) comments
 
 ### Basic reporting
 - On line 99, “results” should be singular: “result”. Other than that, the writing was easy to read, and I did not notice any other grammar or spelling mistakes.
+
+*Response:
+Thanks for catching this typo, it is has been corrected.*
+
 - Paragraph starting on line 37. Another strong argument for using unequal proportions of cell types when assessing the accuracy of a scRNA-seq technique is that it is more representative of what you’d find inside of an organism. When working with blood or a tissue containing multiple cell types, it’s unlikely that those cell types will exists in equal proportions. Make sure to emphasize this at some point.
-- At some point in the Introduction is important to make it clear that other people have intentionally used unequal proportions of cell types in QC analysis of an scRNA-seq technique. For example, see Figure 2F of Rosenberg et al, 2017 (https://www.biorxiv.org/content/biorxiv/early/2017/02/02/105163.full.pdf). However, your work is novel in that it provides a detailed explanation of how to calculate the multiplet frequency in these scenarios.
+
+*Response:
+This is a good point.
+I have added a sentence explaining that in naturally occurring mixtures of cells of different types (such as blood or tissue), the different cell types will usually be present at unequal proportions.*
+
+- At some point in the Introduction is important to make it clear that other people have intentionally used unequal proportions of cell types in QC analysis of an scRNA-seq technique. For example, see Figure 2F of [Rosenberg et al, 2017](https://www.biorxiv.org/content/biorxiv/early/2017/02/02/105163.full.pdf). However, your work is novel in that it provides a detailed explanation of how to calculate the multiplet frequency in these scenarios.
+
+*Response:
+STILL NEEDED*
+
 - Lines 44-47. Give some brief detail about the Poisson distribution for readers who may not be familiar with it.
+
+*Response:
+I have added text explaining that the Poisson distribution is accurate when cells are loaded into droplets randomly and independently.*
+
 - A figure with diagrams showing how the scRNA-seq techniques work may be helpful to some readers.
+
+*Response:
+Given the wealth of different scRNA-seq techniques that can lead to Poisson loading, I have decided against trying to illustrate them graphically.
+I agree that such diagrams are useful, but they are present in most of the references cited in the Introduction.
+My expectation is that this paper will be of interest primarily to experts who are already familiar with the basics of scRNA-seq and/or have read some of the references that explain these methods.*
+
 - Instead of calling R code from within Python (which only works for Python 2 and not Python 3, as far as I know) it would be best to just provide two scripts for readers to choose from that each contain the whole analysis pipeline with one script written purely in Python (no R code) and another purely written in R.
+
+*Response:
+This is a good idea. 
+We have now provided two separate Juypter notebooks, one that performs the calculations purely in R, and one that performs the calculations purely in Python.*
 
 ### Experimental design
 - See my previous comment regarding the Rosenberg et al paper.
+
 - How closely do you expect the number of cells per droplet to follow a Poisson distribution? From my understanding of microfluidics devices, there would be some upper limit to how many cells could physically fit into a single droplet. This concern may be negligible statistically, but it should still be addressed.
 
 ### Validity of the findings
@@ -33,9 +62,6 @@ no comment
 
 ### Comments for the author
 no comment
-
-### *Response*
-*Add text*
 
 ## Reviewer 2 (Peter Sim) comments
 
@@ -50,8 +76,8 @@ The findings presented here are valid and useful. The conclusions are well-suppo
 
 ### Comments for the author
 I have a few questions and comments regarding the potential for more general application of the analysis described here:
+
 1)  In many single-cell RNA-Seq experiments, unsupervised clustering reveals very discrete cell types that are readily distinguishable, but from the same species. The author focuses on the case that two cells from two different species are mixed in arbitrary proportion, but could these results be extended to the case that an arbitrary number of cell types is mixed in varying proportions? As a concrete example, if I am looking at a blood sample, I might expect to readily separate monocytes, B cells, T cells, etc. Could the framework described here be used to calculate an expectation value of, for example, the doublet frequency of each pair of cell types? This may be beyond the scope of the study described here, but may be worth a comment in the manuscript.
+
 2)  Throughout the paper, the author focuses on what I would call “statistical multiplets”. However, in many single-cell RNA-Seq experiments, this is not the only source of multiplets (and in some cases, not even the dominant source). For example, incomplete cellular dissociation could result in sequencing of multiplets simply because the cells were stuck together in the original tissue and remain stuck together during the profiling experiment. In my own work, I have noticed an enrichment in apparent multiplets coming from cell types that I know are interacting with each other in the tissue I am profiling. This makes the application described in 1) particularly important. Having an expectation value for the “statistical multiplet” frequency could provide a framework for evaluating whether or not the observed multiplet frequency for a pair of cell types is higher than one would expect, thereby implying incomplete dissociation. Again, this may be beyond the scope of the study described here, and I leave this to the author's judgement, but I think it would be worth commenting on the distinction between "statistical multiplets" and multiplets arising from other sources.
 
-## *Response*
-*Add text*

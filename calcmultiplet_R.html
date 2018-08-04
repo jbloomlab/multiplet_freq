@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>calcmultiplet</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>calcmultiplet_R</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11776,7 +11776,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><h1>Table of Contents<span class="tocSkip"></span></h1></p>
-<div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#Calculation-of-multiplet-frequency-from-cell-type-mixing-in-Python" data-toc-modified-id="Calculation-of-multiplet-frequency-from-cell-type-mixing-in-Python-1">Calculation of multiplet frequency from cell-type mixing in <code>Python</code></a></span><ul class="toc-item"><li><span><a href="#Function-to-compute-multiplet-frequency" data-toc-modified-id="Function-to-compute-multiplet-frequency-1.1">Function to compute multiplet frequency</a></span></li><li><span><a href="#Python-function" data-toc-modified-id="Python-function-1.2">Python function</a></span></li><li><span><a href="#Example-when-cell-types-mixed-in-equal-proportion" data-toc-modified-id="Example-when-cell-types-mixed-in-equal-proportion-1.3">Example when cell types mixed in equal proportion</a></span></li><li><span><a href="#Example-when-cell-types-are-mixed-unequally" data-toc-modified-id="Example-when-cell-types-are-mixed-unequally-1.4">Example when cell types are mixed unequally</a></span></li><li><span><a href="#Write-results-to-LaTex-tables-for-paper" data-toc-modified-id="Write-results-to-LaTex-tables-for-paper-1.5">Write results to LaTex tables for paper</a></span></li></ul></li></ul></div>
+<div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#Calculation-of-multiplet-frequency-from-cell-type-mixing-in-R" data-toc-modified-id="Calculation-of-multiplet-frequency-from-cell-type-mixing-in-R-1">Calculation of multiplet frequency from cell-type mixing in <code>R</code></a></span><ul class="toc-item"><li><span><a href="#Function-to-compute-multiplet-frequency" data-toc-modified-id="Function-to-compute-multiplet-frequency-1.1">Function to compute multiplet frequency</a></span></li><li><span><a href="#R--function" data-toc-modified-id="R--function-1.2"><code>R</code>  function</a></span></li><li><span><a href="#Example-when-cell-types-mixed-in-equal-proportion" data-toc-modified-id="Example-when-cell-types-mixed-in-equal-proportion-1.3">Example when cell types mixed in equal proportion</a></span></li><li><span><a href="#Example-when-cell-types-are-mixed-unequally" data-toc-modified-id="Example-when-cell-types-are-mixed-unequally-1.4">Example when cell types are mixed unequally</a></span></li></ul></li></ul></div>
 </div>
 </div>
 </div>
@@ -11784,7 +11784,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Calculation-of-multiplet-frequency-from-cell-type-mixing-in-Python">Calculation of multiplet frequency from cell-type mixing in <code>Python</code><a class="anchor-link" href="#Calculation-of-multiplet-frequency-from-cell-type-mixing-in-Python">&#182;</a></h1><p>Here we implement the simple function to calculate the multiplet frequency from single-cell RNA sequencing experiments where we have mixed cells of two types (e.g., human and mouse), and know the number of observed droplets that contain cells of each type.</p>
+<h1 id="Calculation-of-multiplet-frequency-from-cell-type-mixing-in-R">Calculation of multiplet frequency from cell-type mixing in <code>R</code><a class="anchor-link" href="#Calculation-of-multiplet-frequency-from-cell-type-mixing-in-R">&#182;</a></h1><p>Here we implement the simple function to calculate the multiplet frequency from single-cell RNA sequencing experiments where we have mixed cells of two types (e.g., human and mouse), and know the number of observed droplets that contain cells of each type.</p>
 
 </div>
 </div>
@@ -11807,7 +11807,7 @@ and
 $$\mu_2 = -\ln\left(\frac{N - N_2}{N}\right),$$
 and where
 $$N = \frac{N_1 N_2}{N_{12}}.$$</p>
-<h2 id="Python-function">Python function<a class="anchor-link" href="#Python-function">&#182;</a></h2><p>Here is the calculation implemented as Python function:</p>
+<h2 id="R--function"><code>R</code>  function<a class="anchor-link" href="#R--function">&#182;</a></h2><p>Here is the calculation implemented as <code>R</code> function:</p>
 
 </div>
 </div>
@@ -11817,20 +11817,19 @@ $$N = \frac{N_1 N_2}{N_{12}}.$$</p>
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
-
-<span class="k">def</span> <span class="nf">multipletFreq</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">n12</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Estimated multiplet frequency from cell-type mixing experiment.</span>
-
-<span class="sd">    `n1`, `n2`, `n12` (`int` or `numpy.ndarray` of integers)</span>
-<span class="sd">        Number of droplets with at least one cell of type 1,</span>
-<span class="sd">        at least one cell of type 2, or cells of both types.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">/</span> <span class="n">n12</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
-    <span class="n">mu1</span> <span class="o">=</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="n">n1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">mu2</span> <span class="o">=</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="n">n2</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu1</span> <span class="o">+</span> <span class="n">mu2</span>
-    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">mu</span><span class="p">))</span>
+<div class=" highlight hl-r"><pre><span></span><span class="c1">#&#39; Multiplet frequency from cell-type mixing experiment.</span>
+<span class="c1">#&#39;</span>
+<span class="c1">#&#39; @param n1 Number of droplets with at least one cell of type 1</span>
+<span class="c1">#&#39; @param n2 Number of droplets with at least one cell of type 2</span>
+<span class="c1">#&#39; @param n12 Number of droplets with cells of both types</span>
+<span class="c1">#&#39; @return The estimated multiplet frequency</span>
+multiplet_freq <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>n1<span class="p">,</span> n2<span class="p">,</span> n12<span class="p">)</span> <span class="p">{</span>
+  n <span class="o">&lt;-</span> n1 <span class="o">*</span> n2 <span class="o">/</span> n12
+  mu1 <span class="o">&lt;-</span> <span class="o">-</span><span class="kp">log</span><span class="p">((</span>n <span class="o">-</span> n1<span class="p">)</span> <span class="o">/</span> n<span class="p">)</span>
+  mu2 <span class="o">&lt;-</span> <span class="o">-</span><span class="kp">log</span><span class="p">((</span>n <span class="o">-</span> n2<span class="p">)</span> <span class="o">/</span> n<span class="p">)</span>
+  mu <span class="o">&lt;-</span> mu1 <span class="o">+</span> mu2
+  <span class="kr">return</span> <span class="p">(</span><span class="m">1</span> <span class="o">-</span> mu <span class="o">*</span> <span class="kp">exp</span><span class="p">(</span><span class="o">-</span>mu<span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="m">1</span> <span class="o">-</span> <span class="kp">exp</span><span class="p">(</span><span class="o">-</span>mu<span class="p">)))</span>
+<span class="p">}</span>
 </pre></div>
 
 </div>
@@ -11857,18 +11856,69 @@ These statistics give the numbers of non-empty GEMs with cells of each type (GEM
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span>
+<div class=" highlight hl-r"><pre><span></span>df_equal <span class="o">&lt;-</span> <span class="kt">data.frame</span><span class="p">(</span>human_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">2005</span><span class="p">,</span> <span class="m">2050</span><span class="p">,</span> <span class="m">2500</span><span class="p">),</span> 
+           mouse_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">2005</span><span class="p">,</span> <span class="m">2050</span><span class="p">,</span> <span class="m">2500</span><span class="p">),</span> 
+           nonempty_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">),</span> 
+           row.names<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;experiment 1&quot;</span><span class="p">,</span> <span class="s">&quot;experiment 2&quot;</span><span class="p">,</span> <span class="s">&quot;experiment 3&quot;</span><span class="p">))</span>
 
-<span class="n">df_equal</span> <span class="o">=</span> <span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-                <span class="s1">&#39;human_droplets&#39;</span><span class="p">:[</span><span class="mi">2005</span><span class="p">,</span> <span class="mi">2050</span><span class="p">,</span> <span class="mi">2500</span><span class="p">],</span>
-                <span class="s1">&#39;mouse_droplets&#39;</span><span class="p">:[</span><span class="mi">2005</span><span class="p">,</span> <span class="mi">2050</span><span class="p">,</span> <span class="mi">2500</span><span class="p">],</span>
-                <span class="s1">&#39;nonempty_droplets&#39;</span><span class="p">:[</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">]</span>
-                <span class="p">},</span>
-                <span class="n">index</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;experiment&#39;</span><span class="p">)</span>
-            <span class="p">)</span>
+df_equal
+</pre></div>
 
-<span class="n">df_equal</span>
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th></th><th scope=col>human_droplets</th><th scope=col>mouse_droplets</th><th scope=col>nonempty_droplets</th></tr></thead>
+<tbody>
+	<tr><th scope=row>experiment 1</th><td>2005</td><td>2005</td><td>4000</td></tr>
+	<tr><th scope=row>experiment 2</th><td>2050</td><td>2050</td><td>4000</td></tr>
+	<tr><th scope=row>experiment 3</th><td>2500</td><td>2500</td><td>4000</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We calculate the number of droplets with cells of <strong>both</strong> types (human and mouse) simply as the sum of the human and mouse droplets minus the total number of non-empty droplets, since these cross-celltype droplets are double counted in the tally of human and mouse droplets.
+As is apparent after this calculation, in this hypothetical example the cross-celltype droplets represent 0.25%, 2.5%, and 25% of the total non-empty droplets in the three examples.</p>
+<p>Note that we need to import <code>dplyr</code> to run the next cell:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>dplyr<span class="p">)</span>
+
+df_equal <span class="o">&lt;-</span> df_equal <span class="o">%&gt;%</span>
+  mutate<span class="p">(</span>human_and_mouse_droplets<span class="o">=</span>
+    human_droplets <span class="o">+</span> mouse_droplets <span class="o">-</span> nonempty_droplets<span class="p">)</span>
+
+df_equal
 </pre></div>
 
 </div>
@@ -11885,172 +11935,37 @@ These statistics give the numbers of non-empty GEMs with cells of each type (GEM
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/jbloom/Documents/software/conda/envs/BloomLab/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
-  return f(*args, **kwds)
-/Users/jbloom/Documents/software/conda/envs/BloomLab/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
-  return f(*args, **kwds)
+<pre>
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
 </pre>
 </div>
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt"></div>
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>human_droplets</th>
-      <th>mouse_droplets</th>
-      <th>nonempty_droplets</th>
-    </tr>
-    <tr>
-      <th>experiment</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>2005</td>
-      <td>2005</td>
-      <td>4000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2050</td>
-      <td>2050</td>
-      <td>4000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2500</td>
-      <td>2500</td>
-      <td>4000</td>
-    </tr>
-  </tbody>
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>human_droplets</th><th scope=col>mouse_droplets</th><th scope=col>nonempty_droplets</th><th scope=col>human_and_mouse_droplets</th></tr></thead>
+<tbody>
+	<tr><td>2005</td><td>2005</td><td>4000</td><td>  10</td></tr>
+	<tr><td>2050</td><td>2050</td><td>4000</td><td> 100</td></tr>
+	<tr><td>2500</td><td>2500</td><td>4000</td><td>1000</td></tr>
+</tbody>
 </table>
-</div>
-</div>
 
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We calculate the number of droplets with cells of <strong>both</strong> types (human and mouse) simply as the sum of the human and mouse droplets minus the total number of non-empty droplets, since these cross-celltype droplets are double counted in the tally of human and mouse droplets.
-As is apparent after this calculation, in this hypothetical example the cross-celltype droplets represent 0.25%, 2.5%, and 25% of the total non-empty droplets in the three examples.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_equal</span> <span class="o">=</span> <span class="n">df_equal</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">human_and_mouse_droplets</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
-        <span class="n">x</span><span class="o">.</span><span class="n">human_droplets</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">mouse_droplets</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">nonempty_droplets</span><span class="p">)</span>
-
-<span class="n">df_equal</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[3]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>human_droplets</th>
-      <th>mouse_droplets</th>
-      <th>nonempty_droplets</th>
-      <th>human_and_mouse_droplets</th>
-    </tr>
-    <tr>
-      <th>experiment</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>2005</td>
-      <td>2005</td>
-      <td>4000</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2050</td>
-      <td>2050</td>
-      <td>4000</td>
-      <td>100</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2500</td>
-      <td>2500</td>
-      <td>4000</td>
-      <td>1000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
 </div>
 
 </div>
@@ -12064,7 +11979,7 @@ As is apparent after this calculation, in this hypothetical example the cross-ce
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We now calculate the multiplet frequency in two ways.
-The first way is to precisely calculate the multiplet frequency using the exact Poisson derivation as implemented in the <code>multipletFreq</code> function above.</p>
+The first way is to precisely calculate the multiplet frequency using the exact Poisson derivation as implemented in the <code>multiplet_freq</code> function above.</p>
 <p>The second way is to do the simple calculation that has commonly been used in paper that do equal-proportion mixing.
 This method is to simply estimate the multiplet frequency as twice the frequency of cross-cell-type droplets among all non-empty droplets (that is, as $\frac{2 \times N_{1,2}}{N_1 + N_2 + N_{12}}$).</p>
 
@@ -12076,16 +11991,15 @@ This method is to simply estimate the multiplet frequency as twice the frequency
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_equal</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_equal</span>
-            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">multiplet_freq</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> 
-                <span class="n">multipletFreq</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">human_droplets</span><span class="p">,</span>
-                              <span class="n">x</span><span class="o">.</span><span class="n">mouse_droplets</span><span class="p">,</span>
-                              <span class="n">x</span><span class="o">.</span><span class="n">human_and_mouse_droplets</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">twice_cross_celltype_freq</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
-                <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">human_and_mouse_droplets</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">nonempty_droplets</span><span class="p">)</span>
-            <span class="p">)</span>
+<div class=" highlight hl-r"><pre><span></span>df_equal <span class="o">&lt;-</span> df_equal <span class="o">%&gt;%</span>
+  mutate<span class="p">(</span>
+    multiplet_freq<span class="o">=</span>multiplet_freq<span class="p">(</span>
+      human_droplets<span class="p">,</span> mouse_droplets<span class="p">,</span> human_and_mouse_droplets<span class="p">),</span>
+    twice_cross_celltype_freq<span class="o">=</span>
+      <span class="m">2</span> <span class="o">*</span> human_and_mouse_droplets <span class="o">/</span> nonempty_droplets
+    <span class="p">)</span>
 
-<span class="n">df_equal</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+df_equal <span class="o">%&gt;%</span> <span class="kp">format</span><span class="p">(</span>digits<span class="o">=</span><span class="m">2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12098,77 +12012,20 @@ This method is to simply estimate the multiplet frequency as twice the frequency
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[4]:</div>
+<div class="prompt"></div>
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>human_droplets</th>
-      <th>mouse_droplets</th>
-      <th>nonempty_droplets</th>
-      <th>human_and_mouse_droplets</th>
-      <th>multiplet_freq</th>
-      <th>twice_cross_celltype_freq</th>
-    </tr>
-    <tr>
-      <th>experiment</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>2005</td>
-      <td>2005</td>
-      <td>4000</td>
-      <td>10</td>
-      <td>0.005</td>
-      <td>0.005</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2050</td>
-      <td>2050</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.049</td>
-      <td>0.050</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2500</td>
-      <td>2500</td>
-      <td>4000</td>
-      <td>1000</td>
-      <td>0.425</td>
-      <td>0.500</td>
-    </tr>
-  </tbody>
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>human_droplets</th><th scope=col>mouse_droplets</th><th scope=col>nonempty_droplets</th><th scope=col>human_and_mouse_droplets</th><th scope=col>multiplet_freq</th><th scope=col>twice_cross_celltype_freq</th></tr></thead>
+<tbody>
+	<tr><td>2005 </td><td>2005 </td><td>4000 </td><td>  10 </td><td>0.005</td><td>0.005</td></tr>
+	<tr><td>2050 </td><td>2050 </td><td>4000 </td><td> 100 </td><td>0.049</td><td>0.050</td></tr>
+	<tr><td>2500 </td><td>2500 </td><td>4000 </td><td>1000 </td><td>0.425</td><td>0.500</td></tr>
+</tbody>
 </table>
-</div>
+
 </div>
 
 </div>
@@ -12206,148 +12063,18 @@ The reason is that multiplets are more likely than singlets to have a cell of th
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_unequal</span> <span class="o">=</span> <span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-                  <span class="s1">&#39;human_droplets&#39;</span><span class="p">:[</span><span class="mi">2050</span><span class="p">,</span> <span class="mi">3050</span><span class="p">,</span> <span class="mi">3550</span><span class="p">,</span> <span class="mi">3850</span><span class="p">,</span> <span class="mi">3950</span><span class="p">],</span>
-                  <span class="s1">&#39;mouse_droplets&#39;</span><span class="p">:[</span><span class="mi">2050</span><span class="p">,</span> <span class="mi">1050</span><span class="p">,</span> <span class="mi">550</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
-                  <span class="s1">&#39;nonempty_droplets&#39;</span><span class="p">:[</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="n">index</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-              <span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;experiment&#39;</span><span class="p">)</span>
-              <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">human_and_mouse_droplets</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
-                  <span class="n">x</span><span class="o">.</span><span class="n">human_droplets</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">mouse_droplets</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">nonempty_droplets</span><span class="p">)</span>
-              <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">multiplet_freq</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
-                  <span class="n">multipletFreq</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">human_droplets</span><span class="p">,</span>
-                                <span class="n">x</span><span class="o">.</span><span class="n">mouse_droplets</span><span class="p">,</span>
-                                <span class="n">x</span><span class="o">.</span><span class="n">human_and_mouse_droplets</span><span class="p">))</span>
-              <span class="p">)</span>
-
-<span class="n">df_unequal</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[5]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>human_droplets</th>
-      <th>mouse_droplets</th>
-      <th>nonempty_droplets</th>
-      <th>human_and_mouse_droplets</th>
-      <th>multiplet_freq</th>
-    </tr>
-    <tr>
-      <th>experiment</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>2050</td>
-      <td>2050</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.049</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>3050</td>
-      <td>1050</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.065</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3550</td>
-      <td>550</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.110</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>3850</td>
-      <td>250</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.245</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>3950</td>
-      <td>150</td>
-      <td>4000</td>
-      <td>100</td>
-      <td>0.459</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Write-results-to-LaTex-tables-for-paper">Write results to LaTex tables for paper<a class="anchor-link" href="#Write-results-to-LaTex-tables-for-paper">&#182;</a></h2><p>Finally, we write the example results to LaTex tables to be included in the paper:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dfname</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">df_equal</span><span class="p">,</span> <span class="s1">&#39;equal&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">df_unequal</span><span class="p">,</span> <span class="s1">&#39;unequal&#39;</span><span class="p">)]:</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_example.tex&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dfname</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing </span><span class="si">{0}</span><span class="s2"> example data frame to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dfname</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-    <span class="n">ncol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">column_format</span> <span class="o">=</span> <span class="s1">&#39;C</span><span class="si">{0.66in}</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="n">ncol</span>
-    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-       <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">})</span>
-       <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-       <span class="o">.</span><span class="n">to_latex</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">column_format</span><span class="o">=</span><span class="n">column_format</span><span class="p">)</span>
-       <span class="p">)</span>
+<div class=" highlight hl-r"><pre><span></span><span class="kt">data.frame</span><span class="p">(</span>
+    human_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">2050</span><span class="p">,</span> <span class="m">3050</span><span class="p">,</span> <span class="m">3550</span><span class="p">,</span> <span class="m">3850</span><span class="p">,</span> <span class="m">3950</span><span class="p">),</span>
+    mouse_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">2050</span><span class="p">,</span> <span class="m">1050</span><span class="p">,</span> <span class="m">550</span><span class="p">,</span> <span class="m">250</span><span class="p">,</span> <span class="m">150</span><span class="p">),</span>
+    nonempty_droplets<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">,</span> <span class="m">4000</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">%&gt;%</span>
+  mutate<span class="p">(</span>
+    human_and_mouse_droplets<span class="o">=</span>
+      human_droplets <span class="o">+</span> mouse_droplets <span class="o">-</span> nonempty_droplets<span class="p">,</span>
+    multiplet_freq<span class="o">=</span>multiplet_freq<span class="p">(</span>
+      human_droplets<span class="p">,</span> mouse_droplets<span class="p">,</span> human_and_mouse_droplets<span class="p">)</span>
+    <span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="kp">format</span><span class="p">(</span>digits<span class="o">=</span><span class="m">2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12363,11 +12090,21 @@ The reason is that multiplets are more likely than singlets to have a cell of th
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Writing equal example data frame to equal_example.tex
-Writing unequal example data frame to unequal_example.tex
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>human_droplets</th><th scope=col>mouse_droplets</th><th scope=col>nonempty_droplets</th><th scope=col>human_and_mouse_droplets</th><th scope=col>multiplet_freq</th></tr></thead>
+<tbody>
+	<tr><td>2050 </td><td>2050 </td><td>4000 </td><td>100  </td><td>0.049</td></tr>
+	<tr><td>3050 </td><td>1050 </td><td>4000 </td><td>100  </td><td>0.065</td></tr>
+	<tr><td>3550 </td><td> 550 </td><td>4000 </td><td>100  </td><td>0.110</td></tr>
+	<tr><td>3850 </td><td> 250 </td><td>4000 </td><td>100  </td><td>0.245</td></tr>
+	<tr><td>3950 </td><td> 150 </td><td>4000 </td><td>100  </td><td>0.459</td></tr>
+</tbody>
+</table>
+
 </div>
+
 </div>
 
 </div>

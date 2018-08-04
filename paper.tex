@@ -62,13 +62,15 @@ This approach has been used to estimate the multiplet frequency during the proto
 However, in some cases the two cell types may be mixed in unequal proportions.
 Unequal mixing could arise simply from error during cell counting, but it can also be a desirable aspect of experimental design.
 For instance, if the researcher is actually interested in the human cells and simply wants to include an internal control to estimate the multiplet frequency during each new experiment, then (s)he may want to add fewer mouse cells so that most of the resulting data is for the human cells.
+In addition, when analyzing naturally occurring mixtures of cells of multiple types, the different cell types will usually be present in unequal proportions.
 But when the cells are mixed unequally, it is no longer valid to estimate the multiplet frequency as simply twice the fraction of non-empty partitions that contain a mix of both cell types.
 Surprisingly, I could find no published descriptions of how to calculate the multiplet frequency from unequal mixes of two cell types.
 Here I remedy this gap in the literature by deriving the equations to compute the multiplet frequency when the cells are mixed in arbitrary proportions under the assumption that the number of cells per partition is Poisson distributed.
+This Poisson assumption is accurate when cells are loaded randomly and independently into partitions. 
 
 \section*{Methods}
-The LaTex source for this paper, the Jupyter notebook that implements the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
-The Jupyter notebook is also available in Supplemental file~\ref{suppfile:jupyter_notebook}, and an HTML rendering of that notebook is in Supplemental file~\ref{suppfile:html_notebook}.
+The LaTex source for this paper, the Jupyter notebooks that implement the calculations, and all materials associated with the writing and review of the paper are publicly available in a GitHub repository at \url{https://github.com/jbloomlab/multiplet_freq}.
+The Jupyter notebooks are also available in Supplemental file~\ref{suppfile:jupyter_notebook} and ~\ref{suppfile:jupyter_notebook_R}, and HTML renderings of the notebooks are in Supplemental file~\ref{suppfile:html_notebook} and \ref{suppfile:html_notebook_R}.
 
 \section*{Results}
 \label{sec:results}
@@ -137,8 +139,8 @@ Equations~\ref{eq:mu1}, \ref{eq:mu2}, and \ref{eq:N} can be used to calculate $\
 This provides an analytic solution for the multiplet frequency in terms of the three experimental observables.
 
 \subsection*{Implementation and example calculations}
-A simple function to perform the calculations described in the previous subsection is implemented in Python and R in the Jupyter notebook found at
-\url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb} (see also Supplemental files~\ref{suppfile:jupyter_notebook} and \ref{suppfile:html_notebook}).
+A simple function to perform the calculations described in the previous subsection is implemented in Python in the Jupyter notebook found at
+\url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet.ipynb}, and in R in the Jupyter notebook found at \url{https://github.com/jbloomlab/multiplet_freq/blob/master/calcmultiplet_R.ipynb} (see also Supplemental files~\ref{suppfile:jupyter_notebook}, \ref{suppfile:html_notebook}, ~\ref{suppfile:jupyter_notebook_R}, and \ref{suppfile:html_notebook_R}).
 To illustrate the calculations, I used this function to calculate the multiplet frequency for hypothetical data.
 
 First, consider hypothetical data in which the two types of cells are mixed in equal proportions.
@@ -160,7 +162,7 @@ Table~\ref{tab:unequal} shows the multiplet frequencies for several such experim
 An interesting aspect of the results is that at high multiplet frequencies and very unequal cell proportions, the multiplet frequency is substantially \emph{lower} than the fraction of droplets containing the rarer cell type that contain a mix of both cell types.
 The reason is that multiplets (particularly higher-order ones) become more and more likely to contain at least one cell of the rarer type relative to droplets that contain only one cell.
 For instance, in the final experiment in Table~\ref{tab:unequal}, two thirds of the droplets containing mouse cells have a mix of both cell types, yet less than half the non-empty droplets are multiplets (the multiplet frequency is 0.459).
-This somewhat non-intuitive results illustrates the importance of using the correct mathematical relationship to calculate the multiplet frequency when cell types are mixed unequally.
+This somewhat non-intuitive result illustrates the importance of using the correct mathematical relationship to calculate the multiplet frequency when cell types are mixed unequally.
 
 \begin{table}[t]
 \centering
@@ -184,13 +186,25 @@ Nonetheless, simply calculating the multiplet frequency from the data returned b
 
 \begin{suppfile}
 \caption{\label{suppfile:jupyter_notebook}
-A Jupyter notebook that implements the calculations in Python and R functions, and does the calculations for the examples shown in the tables in this paper.
+A Jupyter notebook that implements the calculations in Python, and does the calculations for the examples shown in the tables in this paper.
 }
 \end{suppfile}
 
 \begin{suppfile}
 \caption{\label{suppfile:html_notebook}
 This file contains an HTML rendering of the Jupyter notebook in Supplemental file~\ref{suppfile:jupyter_notebook}.
+}
+\end{suppfile}
+
+\begin{suppfile}
+\caption{\label{suppfile:jupyter_notebook_R}
+A Jupyter notebook that implements the calculations in R, and does the calculations for the examples shown in the tables in this paper.
+}
+\end{suppfile}
+
+\begin{suppfile}
+\caption{\label{suppfile:html_notebook_R}
+This file contains an HTML rendering of the Jupyter notebook in Supplemental file~\ref{suppfile:jupyter_notebook_R}.
 }
 \end{suppfile}
 
