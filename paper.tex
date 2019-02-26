@@ -94,13 +94,13 @@ Likewise, the probability that a droplet contains multiple cells of any type (e.
 \begin{eqnarray}
 \label{eq:Pr2}
 \Pr\left(c \ge 2\right) &=& 1 - \Pr\left(c = 0\right) - \Pr\left(c = 1\right) \nonumber \\
-&=& 1 - e^{-\mu_1 - \mu_2} - \left(\mu_1 + \mu_2\right) e^{-\mu_1 + \mu_2}.
+&=& 1 - e^{-\mu_1 - \mu_2} - \left(\mu_1 + \mu_2\right) e^{-\mu_1 - \mu_2}.
 \end{eqnarray}
 The multiplet frequency $M$ is simply the probability that a droplet with at least one cell actually contains multiple cells, which is
 \begin{eqnarray}
 \label{eq:M}
 M &=& \frac{\Pr\left(c \ge 2\right)}{\Pr\left(c \ge 1\right)} \nonumber \\
-&=& 1 - \frac{\left(\mu_1 + \mu_2\right) e^{-\mu_1 + \mu_2}}{1 - e^{-\mu_1 - \mu_2}}.
+&=& 1 - \frac{\left(\mu_1 + \mu_2\right) e^{-\mu_1 - \mu_2}}{1 - e^{-\mu_1 - \mu_2}}.
 \end{eqnarray}
 However, evaluating this expression for $M$ requires the values of $\mu_1$ and $\mu_2$.
 
